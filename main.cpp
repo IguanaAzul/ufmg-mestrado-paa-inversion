@@ -19,10 +19,12 @@ bool prune_and_search(vector<int>& v, int destination, set<int> visited) {
     sort(v.begin(), v.end());
     v.erase(unique(v.begin(), v.end()), v.end()); // Remove duplicados
     for (int i = 0; i < v.size(); i++) {
-//        if (v[i] > destination) { // Podem haver casos em que a solução ótima passa por valores maiores que o valor final.
-//            v.erase(v.begin() + i);
-//            i--;
-//        }
+        // Podem haver casos em que a solução ótima passa por valores maiores que o valor final.
+        // Mas não pode passar de 10 * destination porque o valor vai ter mais dígitos do que o possível.
+        if (v[i] > destination * 10) {
+            v.erase(v.begin() + i);
+            i--;
+        }
         if (v[i] == destination) { // Valor final encontrado
             return true;
         }
@@ -49,8 +51,6 @@ int main() {
             copy_n(v.begin(), n, v.begin() + n);
             for (unsigned int i = 0; i < n; i++) {
                 visited.insert(v[i]);
-            }
-            for (unsigned int i = 0; i < n; i++) {
                 if (!(visited.find(v[i] + 1) != visited.end())){
                     v[i] += 1;
                 }
