@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <set>
 
 using namespace std;
 
@@ -52,7 +51,7 @@ int main() {
             v.resize(2 * n);
             copy_n(v.begin(), n, v.begin() + n);
             for (unsigned int i = 0; i < n; i++) {
-                visited[v[i]] = 1;
+                visited[v[i]] = true;
                 if (!visited[v[i] + 1]){
                     v[i] += 1;
                 }
