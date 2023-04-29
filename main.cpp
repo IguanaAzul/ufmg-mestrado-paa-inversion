@@ -9,13 +9,15 @@
 using namespace std;
 
 int invert_number(int n) {
-    string to_reverse = to_string(n);
-    reverse(to_reverse.begin(), to_reverse.end());
-    int inverted = stoi(to_reverse);
-    return inverted;
+    int reversed = 0;
+    while (n > 0) {
+        reversed = reversed * 10 + (n % 10);
+        n /= 10;
+    }
+    return reversed;
 }
 
-bool prune_and_search(vector<int>& v, int destination, set<int> visited) {
+bool prune_and_search(vector<int>& v, int destination, vector<bool> visited) {
     sort(v.begin(), v.end());
     v.erase(unique(v.begin(), v.end()), v.end()); // Remove duplicados
     for (int i = 0; i < v.size(); i++) {
@@ -28,7 +30,7 @@ bool prune_and_search(vector<int>& v, int destination, set<int> visited) {
         if (v[i] == destination) { // Valor final encontrado
             return true;
         }
-        if (visited.find(v[i] + 1) != visited.end()) { // Se o valor já foi visitado, remove
+        if (visited[v[i]]) { // Se o valor já foi visitado, remove
             v.erase(v.begin() + i);
             i--;
         }
@@ -42,21 +44,21 @@ int main() {
 
     while (cin >> origin >> destination) {
         unsigned int n = 1;
-        set<int> visited;
-        visited.insert(origin);
+        vector<bool> visited(destination * 10 + 1);
+        visited[origin] = true;
         vector<int> v(n, origin);
         int steps = 1;
         while (true) {
             v.resize(2 * n);
             copy_n(v.begin(), n, v.begin() + n);
             for (unsigned int i = 0; i < n; i++) {
-                visited.insert(v[i]);
-                if (!(visited.find(v[i] + 1) != visited.end())){
+                visited[v[i]] = 1;
+                if (!visited[v[i] + 1]){
                     v[i] += 1;
                 }
             }
             for (unsigned int i = n; i < n * 2; i++) {
-                if (!(visited.find(invert_number(v[i])) != visited.end())){
+                if (!visited[invert_number(v[i])]){
                     v[i] = invert_number(v[i]);
                 }
             }
